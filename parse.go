@@ -29,10 +29,10 @@ func RecordsFromFile(filename string, eolstyle string) ([]string, error) {
 // Unmarshal unmarshals string data into an annotated interface. This should
 // resemble:
 //
-// type SomeType struct {
-// 	ValA string `fixed:"1-5"`
-//	ValB int    `fixed:"10-15"`
-// }
+// 	type SomeType struct {
+// 		ValA string `fixed:"1-5"`
+//		ValB int    `fixed:"10-15"`
+// 	}
 //
 // String offsets are one based, not zero based.
 func Unmarshal(data string, v interface{}) error {
