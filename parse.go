@@ -72,6 +72,18 @@ func Unmarshal(data string, v interface{}) error {
 			}
 			val.Field(i).SetInt(v)
 			break
+		case reflect.Uint:
+			v, err := strconv.ParseUint(s, 10, 64)
+			if err != nil {
+				continue
+			}
+			val.Field(i).SetUint(v)
+			break
+		case reflect.Struct:
+			// Handle embedded objects by recursively parsing
+			// the object with the range we passed.
+			Unmarshal(s, val.Field(i).Interface())
+			break
 		default:
 			break
 		}
