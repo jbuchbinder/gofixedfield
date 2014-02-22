@@ -34,6 +34,9 @@ func RecordsFromFile(filename string, eolstyle string) ([]string, error) {
 //		ValB int    `fixed:"10-15"`
 // 	}
 //
+//	var out SomeType
+//	err := Unmarshal("some string here", &out)
+//
 // String offsets are one based, not zero based.
 func Unmarshal(data string, v interface{}) error {
 	val := reflect.ValueOf(v).Elem()
