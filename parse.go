@@ -91,7 +91,7 @@ func Unmarshal(data string, v interface{}) error {
 			//fmt.Printf("Found value '%s'\n", s)
 			v, err := strconv.ParseInt(s, 10, 64)
 			if err != nil {
-				fmt.Println(err.Error())
+				//fmt.Println(err.Error())
 				continue
 			}
 			val.Field(i).SetInt(v)
@@ -100,7 +100,7 @@ func Unmarshal(data string, v interface{}) error {
 			//fmt.Printf("Found uint value '%s'\n", s)
 			v, err := strconv.ParseUint(s, 10, 64)
 			if err != nil {
-				fmt.Println(err.Error())
+				//fmt.Println(err.Error())
 				continue
 			}
 			val.Field(i).SetUint(v)
@@ -116,7 +116,7 @@ func Unmarshal(data string, v interface{}) error {
 			}
 			err := Unmarshal(s, val.Field(i).Interface())
 			if err != nil {
-				fmt.Println(err.Error())
+				//fmt.Println(err.Error())
 			}
 			break
 		default:
