@@ -6,24 +6,24 @@ import (
 	"strings"
 )
 
-// Unmarshal unmarshals string data into an annotated interface. This should
-// resemble:
+// UnmarshalCsv unmarshals string data into an annotated interface. This
+// should resemble:
 //
 // 	type SomeType struct {
-// 		ValA string        `fixed:"1-5"`
-//		ValB int           `fixed:"10-15"`
-//		ValC *EmbeddedType `fixed:"16-22"`
+// 		ValA string        `csv:1`
+//		ValB int           `csv:2`
+//		ValC *EmbeddedType `csv:3`
 // 	}
 //	type EmbeddedType struct {
-//		ValX string `fixed:"1-3"`
-//		ValY string `fixed:"4-6"`
+//		ValX string `csv:1`
+//		ValY string `csv:2`
 //	}
 //
 //	var out SomeType
 //	err := Unmarshal("some string here", &out)
 //
 // String offsets are one based, not zero based.
-func Unmarshal(data string, v interface{}) error {
+func UnmarshalCsv(data string, sep string, v interface{}) error {
 	//debugStruct(v)
 	var val reflect.Value
 	if reflect.TypeOf(v).Name() != "" {
@@ -32,32 +32,29 @@ func Unmarshal(data string, v interface{}) error {
 		val = reflect.ValueOf(v).Elem()
 	}
 
+	parts := strings.Split(data, sep)
+
 	//fmt.Printf("Found %d fields\n", val.NumField())
 	for i := 0; i < val.NumField(); i++ {
 		typeField := val.Type().Field(i)
 		tag := typeField.Tag
 
-		cRange := tag.Get("fixed")
-		cBookend := strings.Split(cRange, "-")
-		if len(cBookend) != 2 {
-			// If we don't have two values, skip
-			//fmt.Println("Two tag values not found")
+		cField := tag.Get("csv")
+		cSep := tag.Get("csvsplit")
+		if len(cField) < 1 || len(cField) > 4 {
 			continue
 		}
 
-		b, _ := strconv.Atoi(cBookend[0])
-		e, _ := strconv.Atoi(cBookend[1])
-
-		b -= 1
-		//e -= 1
+		f, _ := strconv.Atoi(cField)
+		f -= 1
 
 		// Sanity check range before dying miserably
-		if b < 0 || e > len(data) {
+		if f < 0 || f > len(parts) {
 			//fmt.Printf("Failed sanity check for b = %d, e = %d, len(data) = %d\n", b, e, len(data))
 			continue
 		}
 
-		s := data[b:e]
+		s := parts[f]
 
 		//fmt.Printf("Field found of type %s\n", typeField.Type.Kind())
 
@@ -93,7 +90,7 @@ func Unmarshal(data string, v interface{}) error {
 				// Initialize pointer to avoid panic
 				val.Field(i).Set(reflect.New(val.Field(i).Type().Elem()))
 			}
-			err := Unmarshal(s, val.Field(i).Interface())
+			err := UnmarshalCsv(s, cSep, val.Field(i).Interface())
 			if err != nil {
 				//fmt.Println(err.Error())
 			}
