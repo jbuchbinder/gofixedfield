@@ -10,17 +10,17 @@ import (
 // should resemble:
 //
 // 	type SomeType struct {
-// 		ValA string        `csv:1`
-//		ValB int           `csv:2`
-//		ValC *EmbeddedType `csv:3`
+// 		ValA string        `csv:"1"`
+//		ValB int           `csv:"2"`
+//		ValC *EmbeddedType `csv:"3" csvsplit:"~"`
 // 	}
 //	type EmbeddedType struct {
-//		ValX string `csv:1`
-//		ValY string `csv:2`
+//		ValX string `csv:"1"`
+//		ValY string `csv:"2"`
 //	}
 //
 //	var out SomeType
-//	err := Unmarshal("some string here", &out)
+//	err := Unmarshal("A,2,X~Y", "," &out)
 //
 // String offsets are one based, not zero based.
 func UnmarshalCsv(data string, sep string, v interface{}) error {
@@ -32,6 +32,7 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 		val = reflect.ValueOf(v).Elem()
 	}
 
+	//fmt.Println("UnmarshalCsv called with separator " + sep)
 	parts := strings.Split(data, sep)
 
 	//fmt.Printf("Found %d fields\n", val.NumField())
@@ -42,6 +43,7 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 		cField := tag.Get("csv")
 		cSep := tag.Get("csvsplit")
 		if len(cField) < 1 || len(cField) > 4 {
+			//fmt.Println("Bailing out, invalid csv tag ", cField)
 			continue
 		}
 
@@ -50,11 +52,12 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 
 		// Sanity check range before dying miserably
 		if f < 0 || f > len(parts) {
-			//fmt.Printf("Failed sanity check for b = %d, e = %d, len(data) = %d\n", b, e, len(data))
+			//fmt.Printf("Failed sanity check for f = %d, len(parts) = %d\n", f, len(parts))
 			continue
 		}
 
 		s := parts[f]
+		//fmt.Printf("s == %s\n", s)
 
 		//fmt.Printf("Field found of type %s\n", typeField.Type.Kind())
 
@@ -82,6 +85,10 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 			val.Field(i).SetUint(v)
 			break
 		case reflect.Ptr, reflect.Struct:
+			if cSep == "" {
+				//fmt.Println("No csvsplit defined")
+				continue
+			}
 			//fmt.Printf("Found ptr/str value '%s'\n", s)
 
 			// Handle embedded objects by recursively parsing
