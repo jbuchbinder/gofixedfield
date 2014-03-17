@@ -62,11 +62,53 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 		//fmt.Printf("Field found of type %s\n", typeField.Type.Kind())
 
 		switch typeField.Type.Kind() {
+		case reflect.Bool:
+			v, err := strconv.ParseBool(s)
+			if err != nil {
+				//fmt.Println(err.Error())
+				continue
+			}
+			val.Field(i).SetBool(v)
+			break
+		case reflect.Float32:
+			v, err := strconv.ParseFloat(s, 32)
+			if err != nil {
+				//fmt.Println(err.Error())
+				continue
+			}
+			val.Field(i).SetFloat(v)
+			break
+		case reflect.Float64:
+			v, err := strconv.ParseFloat(s, 64)
+			if err != nil {
+				//fmt.Println(err.Error())
+				continue
+			}
+			val.Field(i).SetFloat(v)
+			break
 		case reflect.String:
 			//fmt.Printf("Found string value '%s'\n", s)
 			val.Field(i).SetString(s)
 			break
-		case reflect.Int:
+		case reflect.Int8:
+			//fmt.Printf("Found value '%s'\n", s)
+			v, err := strconv.ParseInt(s, 10, 8)
+			if err != nil {
+				//fmt.Println(err.Error())
+				continue
+			}
+			val.Field(i).SetInt(v)
+			break
+		case reflect.Int32:
+			//fmt.Printf("Found value '%s'\n", s)
+			v, err := strconv.ParseInt(s, 10, 32)
+			if err != nil {
+				//fmt.Println(err.Error())
+				continue
+			}
+			val.Field(i).SetInt(v)
+			break
+		case reflect.Int, reflect.Int64:
 			//fmt.Printf("Found value '%s'\n", s)
 			v, err := strconv.ParseInt(s, 10, 64)
 			if err != nil {
