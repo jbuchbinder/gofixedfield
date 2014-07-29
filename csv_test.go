@@ -14,6 +14,7 @@ type csvBasicParseTest struct {
 	NumberB int    `csv:"2"`
 	StringC string `csv:"3"`
 	StringD string `csv:"4"`
+	RawLine string `csv:"raw"`
 }
 
 type csvLayeredParseTest struct {
@@ -42,6 +43,9 @@ func TestCsvBasicParsing(t *testing.T) {
 	}
 	if out.StringD != "XYZ" {
 		t.Errorf("StringD parsed as '%s'", out.StringD)
+	}
+	if out.RawLine != CSV_BASIC_PARSE_TEST {
+		t.Errorf("RawLine parsed as '%s'", out.RawLine)
 	}
 }
 

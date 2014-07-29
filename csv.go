@@ -10,9 +10,10 @@ import (
 // should resemble:
 //
 // 	type SomeType struct {
-// 		ValA string        `csv:"1"`
-//		ValB int           `csv:"2"`
-//		ValC *EmbeddedType `csv:"3" csvsplit:"~"`
+// 		ValA      string        `csv:"1"`
+//		ValB      int           `csv:"2"`
+//		ValC      *EmbeddedType `csv:"3" csvsplit:"~"`
+//		WholeLine string        `csv:"raw"`
 // 	}
 //	type EmbeddedType struct {
 //		ValX string `csv:"1"`
@@ -44,6 +45,18 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 		cSep := tag.Get("csvsplit")
 		if len(cField) < 1 || len(cField) > 4 {
 			//fmt.Println("Bailing out, invalid csv tag ", cField)
+			continue
+		}
+
+		// Handle just raw data
+		if cField == "raw" {
+			switch typeField.Type.Kind() {
+			case reflect.String:
+				val.Field(i).SetString(data)
+				break
+			default:
+				break
+			}
 			continue
 		}
 
