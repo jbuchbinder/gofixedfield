@@ -5,8 +5,8 @@ import (
 )
 
 const (
-	BASIC_PARSE_TEST   = "1234567890ABCDEFGHIJ"
-	LAYERED_PARSE_TEST = "20091010EX"
+	basicParseTestString   = "1234567890ABCDEFGHIJ"
+	layeredParseTestString = "20091010EX"
 )
 
 type basicParseTest struct {
@@ -30,7 +30,7 @@ type dateStruct struct {
 func TestBasicParsing(t *testing.T) {
 	t.Log("Basic parsing test")
 	var out basicParseTest
-	Unmarshal(BASIC_PARSE_TEST, &out)
+	Unmarshal(basicParseTestString, &out)
 	if out.NumberA != 12345 {
 		t.Errorf("NumberA parsed as %d", out.NumberA)
 	}
@@ -48,7 +48,7 @@ func TestBasicParsing(t *testing.T) {
 func TestLayeredParsing(t *testing.T) {
 	t.Log("Layered parsing test")
 	var out layeredParseTest
-	Unmarshal(LAYERED_PARSE_TEST, &out)
+	Unmarshal(layeredParseTestString, &out)
 	if out.StringAfter != "EX" {
 		t.Errorf("Failed to parse after embedded struct/ptr\n")
 	}

@@ -48,8 +48,8 @@ func Unmarshal(data string, v interface{}) error {
 		b, _ := strconv.Atoi(cBookend[0])
 		e, _ := strconv.Atoi(cBookend[1])
 
-		b -= 1
-		//e -= 1
+		b--
+		//e--
 
 		// Sanity check range before dying miserably
 		if b < 0 || e > len(data) {

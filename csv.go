@@ -61,7 +61,7 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 		}
 
 		f, _ := strconv.Atoi(cField)
-		f -= 1
+		f--
 
 		// Sanity check range before dying miserably
 		if f < 0 || f > len(parts) {

@@ -5,8 +5,8 @@ import (
 )
 
 const (
-	CSV_BASIC_PARSE_TEST   = "1,2,ABC,XYZ"
-	CSV_LAYERED_PARSE_TEST = "2009-10-10,EX"
+	csvBasicParseTestString   = "1,2,ABC,XYZ"
+	csvLayeredParseTestString = "2009-10-10,EX"
 )
 
 type csvBasicParseTest struct {
@@ -20,6 +20,7 @@ type csvBasicParseTest struct {
 type csvLayeredParseTest struct {
 	DateField   *csvDateStruct `csv:"1" csvsplit:"-"`
 	StringAfter string         `csv:"2"`
+	RawLine     string         `csv:"raw"`
 }
 
 type csvDateStruct struct {
@@ -31,7 +32,7 @@ type csvDateStruct struct {
 func TestCsvBasicParsing(t *testing.T) {
 	t.Log("CSV Basic parsing test")
 	var out csvBasicParseTest
-	UnmarshalCsv(CSV_BASIC_PARSE_TEST, ",", &out)
+	UnmarshalCsv(csvBasicParseTestString, ",", &out)
 	if out.NumberA != 1 {
 		t.Errorf("NumberA parsed as %d", out.NumberA)
 	}
@@ -44,7 +45,7 @@ func TestCsvBasicParsing(t *testing.T) {
 	if out.StringD != "XYZ" {
 		t.Errorf("StringD parsed as '%s'", out.StringD)
 	}
-	if out.RawLine != CSV_BASIC_PARSE_TEST {
+	if out.RawLine != csvBasicParseTestString {
 		t.Errorf("RawLine parsed as '%s'", out.RawLine)
 	}
 }
@@ -52,7 +53,7 @@ func TestCsvBasicParsing(t *testing.T) {
 func TestCsvLayeredParsing(t *testing.T) {
 	t.Log("CSV Layered parsing test")
 	var out csvLayeredParseTest
-	UnmarshalCsv(CSV_LAYERED_PARSE_TEST, ",", &out)
+	UnmarshalCsv(csvLayeredParseTestString, ",", &out)
 	if out.StringAfter != "EX" {
 		t.Errorf("Failed to parse after embedded struct/ptr\n")
 	}
@@ -64,5 +65,8 @@ func TestCsvLayeredParsing(t *testing.T) {
 	}
 	if out.DateField.D != 10 {
 		t.Errorf("Failed to parse embedded D (D=%d)\n", out.DateField.D)
+	}
+	if out.RawLine != csvLayeredParseTestString {
+		t.Errorf("RawLine parsed as '%s'", out.RawLine)
 	}
 }
