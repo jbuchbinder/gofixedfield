@@ -14,6 +14,10 @@ const (
 	EOL_DOS = "\r\n"
 )
 
+// DECIMAL_COMMA enables the parsing of numeric values having a comma
+// instead of a point as decimal separator.
+var DECIMAL_COMMA bool
+
 // RecordsFromFile reads a file and splits into single line records, which
 // can be unmarshalled.
 func RecordsFromFile(filename string, eolstyle string) ([]string, error) {
