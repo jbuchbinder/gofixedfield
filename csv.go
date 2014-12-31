@@ -84,6 +84,9 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 			val.Field(i).SetBool(v)
 			break
 		case reflect.Float32:
+			if DECIMAL_COMMA {
+				s = strings.Replace(s, ",", ".", 1)
+			}
 			v, err := strconv.ParseFloat(s, 32)
 			if err != nil {
 				//fmt.Println(err.Error())
@@ -92,6 +95,9 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 			val.Field(i).SetFloat(v)
 			break
 		case reflect.Float64:
+			if DECIMAL_COMMA {
+				s = strings.Replace(s, ",", ".", 1)
+			}
 			v, err := strconv.ParseFloat(s, 64)
 			if err != nil {
 				//fmt.Println(err.Error())
