@@ -5,7 +5,7 @@ import (
 )
 
 func TestRecordsFromFile(t *testing.T) {
-	s, err := RecordsFromFile("./test.txt", EOL_UNIX)
+	s, err := RecordsFromFile("./test.txt", EOLUnix)
 	if err != nil {
 		t.Errorf(err.Error())
 	}

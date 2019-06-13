@@ -6,17 +6,17 @@ import (
 )
 
 const (
-	// EOL_UNIX represents Unix/Linux style end of line.
-	EOL_UNIX = "\n"
-	// EOL_MAC represents Macintosh style end of line.
-	EOL_MAC = "\r"
-	// EOL_DOS represents DOS/Windows style end of line.
-	EOL_DOS = "\r\n"
+	// EOLUnix represents Unix/Linux style end of line.
+	EOLUnix = "\n"
+	// EOLMac represents Macintosh style end of line.
+	EOLMac = "\r"
+	// EOLDOS represents DOS/Windows style end of line.
+	EOLDOS = "\r\n"
 )
 
-// DECIMAL_COMMA enables the parsing of numeric values having a comma
+// DecimalComma enables the parsing of numeric values having a comma
 // instead of a point as decimal separator.
-var DECIMAL_COMMA bool
+var DecimalComma bool
 
 // RecordsFromFile reads a file and splits into single line records, which
 // can be unmarshalled.
