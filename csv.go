@@ -21,7 +21,7 @@ import (
 //	}
 //
 //	var out SomeType
-//	err := Unmarshal("A,2,X~Y", "," &out)
+//	err := Unmarshal("A,2,X~Y", ",", &out)
 //
 // String offsets are one based, not zero based.
 func UnmarshalCsv(data string, sep string, v interface{}) error {
