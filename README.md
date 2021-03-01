@@ -7,6 +7,8 @@
 Go library to deal with extracting fixed field form values using
 struct tags.
 
-##European-styled numbers
+## European-styled numbers
+
 To parse documents that use a comma "," instead of the decimal point, just set to true the corresponding global variable:
 `gofixedfield.DecimalComma = true`
+
