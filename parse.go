@@ -1,6 +1,7 @@
 package gofixedfield
 
 import (
+	//"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -17,6 +18,7 @@ import (
 //	type EmbeddedType struct {
 //		ValX string `fixed:"1-3"`
 //		ValY string `fixed:"4-6"`
+//		ValZ string `fixed:"8"`
 //	}
 //
 //	var out SomeType
@@ -39,14 +41,16 @@ func Unmarshal(data string, v interface{}) error {
 
 		cRange := tag.Get("fixed")
 		cBookend := strings.Split(cRange, "-")
+		var b, e int
 		if len(cBookend) != 2 {
-			// If we don't have two values, skip
-			//fmt.Println("Two tag values not found")
-			continue
+			// If we don't have two values, assume one character
+			//fmt.Printf("cRange = %s, cBookend = %s\n", cRange, cBookend)
+			b, _ = strconv.Atoi(cRange)
+			e = b
+		} else {
+			b, _ = strconv.Atoi(cBookend[0])
+			e, _ = strconv.Atoi(cBookend[1])
 		}
-
-		b, _ := strconv.Atoi(cBookend[0])
-		e, _ := strconv.Atoi(cBookend[1])
 
 		b--
 		//e--
@@ -57,6 +61,7 @@ func Unmarshal(data string, v interface{}) error {
 			continue
 		}
 
+		//fmt.Printf("b = %d, e = %d\n", b, e)
 		s := data[b:e]
 
 		//fmt.Printf("Field found of type %s\n", typeField.Type.Kind())

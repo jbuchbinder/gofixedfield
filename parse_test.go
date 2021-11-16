@@ -19,6 +19,7 @@ type basicParseTest struct {
 type layeredParseTest struct {
 	DateField   *dateStruct `fixed:"1-8"`
 	StringAfter string      `fixed:"9-10"`
+	OneChar     string      `fixed:"9"`
 }
 
 type dateStruct struct {
@@ -51,6 +52,9 @@ func TestLayeredParsing(t *testing.T) {
 	Unmarshal(layeredParseTestString, &out)
 	if out.StringAfter != "EX" {
 		t.Errorf("Failed to parse after embedded struct/ptr\n")
+	}
+	if out.OneChar != "E" {
+		t.Errorf("Failed to parse single character (%s != %s)\n", out.OneChar, "E")
 	}
 	if out.DateField.Y != 2009 {
 		t.Errorf("Failed to parse embedded Y (Y=%d)\n", out.DateField.Y)
