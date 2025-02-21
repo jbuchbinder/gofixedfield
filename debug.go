@@ -5,9 +5,9 @@ import (
 	"reflect"
 )
 
-func debugStruct(i interface{}) {
+func debugStruct(i any) {
 	val := reflect.ValueOf(i).Elem()
-	for i := 0; i < val.NumField(); i++ {
+	for i := range val.NumField() {
 		valueField := val.Field(i)
 		typeField := val.Type().Field(i)
 		tag := typeField.Tag

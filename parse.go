@@ -10,11 +10,11 @@ import (
 // Unmarshal unmarshals string data into an annotated interface. This should
 // resemble:
 //
-// 	type SomeType struct {
-// 		ValA string        `fixed:"1-5"`
+//	type SomeType struct {
+//		ValA string        `fixed:"1-5"`
 //		ValB int           `fixed:"10-15"`
 //		ValC *EmbeddedType `fixed:"16-22"`
-// 	}
+//	}
 //	type EmbeddedType struct {
 //		ValX string `fixed:"1-3"`
 //		ValY string `fixed:"4-6"`
@@ -25,7 +25,7 @@ import (
 //	err := Unmarshal("some string here", &out)
 //
 // String offsets are one based, not zero based.
-func Unmarshal(data string, v interface{}) error {
+func Unmarshal(data string, v any) error {
 	//debugStruct(v)
 	var val reflect.Value
 	if reflect.TypeOf(v).Name() != "" {
@@ -35,7 +35,7 @@ func Unmarshal(data string, v interface{}) error {
 	}
 
 	//fmt.Printf("Found %d fields\n", val.NumField())
-	for i := 0; i < val.NumField(); i++ {
+	for i := range val.NumField() {
 		typeField := val.Type().Field(i)
 		tag := typeField.Tag
 
@@ -74,7 +74,6 @@ func Unmarshal(data string, v interface{}) error {
 				continue
 			}
 			val.Field(i).SetBool(v)
-			break
 		case reflect.Float32:
 			if DecimalComma {
 				s = strings.Replace(s, ",", ".", 1)
@@ -85,7 +84,6 @@ func Unmarshal(data string, v interface{}) error {
 				continue
 			}
 			val.Field(i).SetFloat(v)
-			break
 		case reflect.Float64:
 			if DecimalComma {
 				s = strings.Replace(s, ",", ".", 1)
@@ -96,11 +94,9 @@ func Unmarshal(data string, v interface{}) error {
 				continue
 			}
 			val.Field(i).SetFloat(v)
-			break
 		case reflect.String:
 			//fmt.Printf("Found string value '%s'\n", s)
 			val.Field(i).SetString(s)
-			break
 		case reflect.Int8:
 			//fmt.Printf("Found value '%s'\n", s)
 			v, err := strconv.ParseInt(s, 10, 8)
@@ -109,7 +105,6 @@ func Unmarshal(data string, v interface{}) error {
 				continue
 			}
 			val.Field(i).SetInt(v)
-			break
 		case reflect.Int32:
 			//fmt.Printf("Found value '%s'\n", s)
 			v, err := strconv.ParseInt(s, 10, 32)
@@ -118,7 +113,6 @@ func Unmarshal(data string, v interface{}) error {
 				continue
 			}
 			val.Field(i).SetInt(v)
-			break
 		case reflect.Int, reflect.Int64:
 			//fmt.Printf("Found value '%s'\n", s)
 			v, err := strconv.ParseInt(s, 10, 64)
@@ -127,7 +121,6 @@ func Unmarshal(data string, v interface{}) error {
 				continue
 			}
 			val.Field(i).SetInt(v)
-			break
 		case reflect.Uint:
 			//fmt.Printf("Found uint value '%s'\n", s)
 			v, err := strconv.ParseUint(s, 10, 64)
@@ -136,7 +129,6 @@ func Unmarshal(data string, v interface{}) error {
 				continue
 			}
 			val.Field(i).SetUint(v)
-			break
 		case reflect.Ptr, reflect.Struct:
 			//fmt.Printf("Found ptr/str value '%s'\n", s)
 
@@ -150,10 +142,8 @@ func Unmarshal(data string, v interface{}) error {
 			if err != nil {
 				//fmt.Println(err.Error())
 			}
-			break
 		default:
 			//fmt.Println("Found unknown value '%s'", s)
-			break
 		}
 	}
 	return nil

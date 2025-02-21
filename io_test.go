@@ -7,7 +7,7 @@ import (
 func TestRecordsFromFile(t *testing.T) {
 	s, err := RecordsFromFile("./test.txt", EOLUnix)
 	if err != nil {
-		t.Errorf(err.Error())
+		t.Errorf("%s", err.Error())
 	}
 	if len(s) != 3 {
 		t.Errorf("Deserialized with %d records\n", len(s))

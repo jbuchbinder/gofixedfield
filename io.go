@@ -1,7 +1,7 @@
 package gofixedfield
 
 import (
-	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -21,7 +21,7 @@ var DecimalComma bool
 // RecordsFromFile reads a file and splits into single line records, which
 // can be unmarshalled.
 func RecordsFromFile(filename string, eolstyle string) ([]string, error) {
-	data, err := ioutil.ReadFile(filename)
+	data, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}

@@ -9,12 +9,12 @@ import (
 // UnmarshalCsv unmarshals string data into an annotated interface. This
 // should resemble:
 //
-// 	type SomeType struct {
-// 		ValA      string        `csv:"1"`
+//	type SomeType struct {
+//		ValA      string        `csv:"1"`
 //		ValB      int           `csv:"2"`
 //		ValC      *EmbeddedType `csv:"3" csvsplit:"~"`
 //		WholeLine string        `csv:"raw"`
-// 	}
+//	}
 //	type EmbeddedType struct {
 //		ValX string `csv:"1"`
 //		ValY string `csv:"2"`
@@ -24,7 +24,7 @@ import (
 //	err := Unmarshal("A,2,X~Y", ",", &out)
 //
 // String offsets are one based, not zero based.
-func UnmarshalCsv(data string, sep string, v interface{}) error {
+func UnmarshalCsv(data string, sep string, v any) error {
 	//debugStruct(v)
 	var val reflect.Value
 	if reflect.TypeOf(v).Name() != "" {
@@ -37,7 +37,7 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 	parts := strings.Split(data, sep)
 
 	//fmt.Printf("Found %d fields\n", val.NumField())
-	for i := 0; i < val.NumField(); i++ {
+	for i := range val.NumField() {
 		typeField := val.Type().Field(i)
 		tag := typeField.Tag
 
@@ -53,9 +53,7 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 			switch typeField.Type.Kind() {
 			case reflect.String:
 				val.Field(i).SetString(data)
-				break
 			default:
-				break
 			}
 			continue
 		}
@@ -82,7 +80,6 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 				continue
 			}
 			val.Field(i).SetBool(v)
-			break
 		case reflect.Float32:
 			if DecimalComma {
 				s = strings.Replace(s, ",", ".", 1)
@@ -93,7 +90,6 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 				continue
 			}
 			val.Field(i).SetFloat(v)
-			break
 		case reflect.Float64:
 			if DecimalComma {
 				s = strings.Replace(s, ",", ".", 1)
@@ -104,11 +100,9 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 				continue
 			}
 			val.Field(i).SetFloat(v)
-			break
 		case reflect.String:
 			//fmt.Printf("Found string value '%s'\n", s)
 			val.Field(i).SetString(s)
-			break
 		case reflect.Int8:
 			//fmt.Printf("Found value '%s'\n", s)
 			v, err := strconv.ParseInt(s, 10, 8)
@@ -117,7 +111,6 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 				continue
 			}
 			val.Field(i).SetInt(v)
-			break
 		case reflect.Int32:
 			//fmt.Printf("Found value '%s'\n", s)
 			v, err := strconv.ParseInt(s, 10, 32)
@@ -126,7 +119,6 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 				continue
 			}
 			val.Field(i).SetInt(v)
-			break
 		case reflect.Int, reflect.Int64:
 			//fmt.Printf("Found value '%s'\n", s)
 			v, err := strconv.ParseInt(s, 10, 64)
@@ -135,7 +127,6 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 				continue
 			}
 			val.Field(i).SetInt(v)
-			break
 		case reflect.Uint:
 			//fmt.Printf("Found uint value '%s'\n", s)
 			v, err := strconv.ParseUint(s, 10, 64)
@@ -144,7 +135,6 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 				continue
 			}
 			val.Field(i).SetUint(v)
-			break
 		case reflect.Ptr, reflect.Struct:
 			if cSep == "" {
 				//fmt.Println("No csvsplit defined")
@@ -162,10 +152,8 @@ func UnmarshalCsv(data string, sep string, v interface{}) error {
 			if err != nil {
 				//fmt.Println(err.Error())
 			}
-			break
 		default:
 			//fmt.Println("Found unknown value '%s'", s)
-			break
 		}
 	}
 	return nil
